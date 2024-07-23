@@ -1,0 +1,76 @@
+def bordro(Net, Gun, Normal, Kumulatif, GVİstisna, DVİstisna):
+    Brut = Net
+
+    while (Brut - (Brut * 0.15) - ((Brut * 0.85) * 0.2 - GVİstisna) - (Brut * 0.00759 - DVİstisna)) < Net:
+        Brut += 0.1
+
+    GVMatrah = Brut * 0.85
+    print('GVMATRAH=', GVMatrah)
+
+    def gelirvergi(Kumulatif, GVMatrah):
+        if Kumulatif + GVMatrah <= 110000:
+            GelirVergisi = (GVMatrah * 0.15) - GVİstisna
+            return GelirVergisi
+
+        if 110000 < Kumulatif + GVMatrah < 230000:
+            if Kumulatif >= 110000:
+                GelirVergisi = (GVMatrah * 0.2) - GVİstisna
+                return GelirVergisi
+            else:
+                ustkisim = (Kumulatif + GVMatrah) - 110000
+                GelirVergisi = (ustkisim * 0.2) + ((GVMatrah - ustkisim) * 0.15) - GVİstisna
+                return GelirVergisi
+
+        if 230000 <= Kumulatif + GVMatrah < 870000:
+            if Kumulatif >= 230000:
+                GelirVergisi = (GVMatrah * 0.27) - GVİstisna
+                return GelirVergisi
+            else:
+                ustkisim = (Kumulatif + GVMatrah) - 230000
+                GelirVergisi = (ustkisim * 0.27) + ((GVMatrah - ustkisim) * 0.2) - GVİstisna
+                return GelirVergisi
+
+        if 870000 <= Kumulatif + GVMatrah < 3000000:
+            if Kumulatif >= 870000:
+                GelirVergisi = (GVMatrah * 0.35) - GVİstisna
+                return GelirVergisi
+            else:
+                ustkisim = (Kumulatif + GVMatrah) - 870000
+                GelirVergisi = (ustkisim * 0.35) + ((GVMatrah - ustkisim) * 0.27) - GVİstisna
+                return GelirVergisi
+
+        if Kumulatif + GVMatrah >= 3000000:
+            if Kumulatif >= 3000000:
+                GelirVergisi = (GVMatrah * 0.4) - GVİstisna
+                return GelirVergisi
+            else:
+                ustkisim = (Kumulatif + GVMatrah) - 3000000
+                GelirVergisi = (ustkisim * 0.4) + ((GVMatrah - ustkisim) * 0.35) - GVİstisna
+                return GelirVergisi
+
+    def damgavergi(Brut, DVİstisna):
+        DamgaVergisi = (Brut * 0.00759) - DVİstisna
+        return DamgaVergisi
+
+    GelirVergisi = gelirvergi(Kumulatif, GVMatrah)
+    DamgaVergisi = damgavergi(Brut, DVİstisna)
+
+    print('Brut =', Brut)
+    print('Gelir Vergisi =', GelirVergisi)
+    print('Damga Vergisi =', DamgaVergisi)
+
+    Brut=Net
+
+    while (Brut - (Brut * 0.15) - GelirVergisi - DamgaVergisi < Net):
+        Brut += 0.1
+
+    return Brut, GelirVergisi, DamgaVergisi
+
+Net = 32170.95
+Gun = 30
+Normal = 1
+Kumulatif = 105111.78
+GVİstisna = 2550.32
+DVİstisna = 151.82
+
+bordro(Net, Gun, Normal, Kumulatif, GVİstisna, DVİstisna)
