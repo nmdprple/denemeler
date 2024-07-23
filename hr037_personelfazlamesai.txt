@@ -1,0 +1,65 @@
+--drop FUNCTION hr037_personelfazlamesai
+
+CREATE OR REPLACE FUNCTION public.hr037_personelfazlamesai(
+    parambranchuuid uuid,
+	paramdepartmentuuid text[],
+	paramshiftdate date,
+	paramshiftenddate date
+ )
+RETURNS TABLE (dayorder numeric,peremployment uuid,AdiSoyyadi text,branchname text,departname text,positionname text,jobname text,overtime NUMERIC,datatype numeric,workdate date,MesaiTip text,branchid uuid,deprecid uuid)
+ LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+
+
+BEGIN
+   RETURN QUERY 
+
+SELECT 
+distinct(hs.dayorder)::numeric as dayorder,
+fm.peremployment::uuid,
+concat(sicil.firstname,' ',sicil.familyname)::text  as AdiSoyadi,
+hrorgbranch.branchname::text, 
+hrorgdepartment.departname::text,
+hrorgposition.positionname::text,
+hrorgjobs.jobname::text,
+fm.overtime::numeric,
+fm.datatype::numeric,
+fm.workdate::Date,
+(case fm.datatype WHEN 0 then 'Fazla Mesai' when 1 then 'Aylık Ödenecek' when 2 then 'Aylık Alacak' else 'Belirsiz' end )::Text as MesaiTip,
+hrorgbranch.recid::uuid as branchid,
+hrorgdepartment.recid::uuid as deprecid
+
+
+ from hrpersonnelovertime hs 
+
+left outer join hrpersonnelovertime fm on hs.dayorder=fm.dayorder
+
+inner join hrpersonnelemployment gircik on fm.peremployment=gircik.recid
+
+inner join hrpersonnel sicil on gircik.personneluuid=sicil.recid
+
+inner join hrpersonnelposition pozisyon on pozisyon.peremployment=gircik.recid AND pozisyon.recid=(select pp.recid from hrpersonnelposition pp where pp.deleted=False and pp.personneluuid=sicil.recid and pp.peremployment=gircik.recid order by pp.begindate desc limit (1))
+
+inner join hrorgbranch on hrorgbranch.recid=gircik.branch
+
+inner JOIN hrorgdepartment on hrorgdepartment.recid=pozisyon.workdepartment
+
+inner JOIN hrorgposition on hrorgposition.recid=pozisyon.workposition
+
+inner JOIN hrorgjobs on hrorgjobs.recid=pozisyon.workjob
+
+where fm.workdate>=paramshiftdate and  fm.workdate<=paramshiftenddate
+and fm.departmentid::uuid in (Select unnest(paramdepartmentuuid)::uuid) 
+and fm.deleted=False
+and fm.branchid=parambranchuuid
+;
+
+END
+$BODY$;
+
+
+--SELECT * from hrpersonnelposition limit 111

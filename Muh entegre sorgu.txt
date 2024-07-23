@@ -1,0 +1,251 @@
+1**************
+Select  hrorgbranch.branchname,
+tablo.branch,hrorgdepartment.departname,
+intg.id ,
+entegrasyon.debitaccountrecid,
+entegrasyon.creditaccountrecid,
+entegrasyon.debitaccountdepartrecid,
+entegrasyon.creditaccountdepartrecid,
+entegrasyon.debitgrouptype,
+entegrasyon.creditgrouptype,
+entegrasyon.debitorderno,
+entegrasyon.debitorderno,
+entegrasyon.periodrecid,
+entegrasyon.enterprisesid
+FROM (
+select  hrorgbranchdepartments.id,
+hrorgbranchdepartments.branch
+,hrorgbranchdepartments.department
+,hrorgbranchdepartments.enterprisesid
+from hrorgbranchdepartments
+where branch in ('0083e056-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e057-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e06c-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e067-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e06d-ba9a-11ee-b160-b7e4e57a3c78') ) as tablo
+LEFT OUTER  JOIN hrorgbranch on tablo.branch = hrorgbranch.recid
+LEFT  OUTER  JOIN hrorgdepartment on tablo.department = hrorgdepartment.recid
+LEFT OUTER JOIN hrcodelistintegrationcode intg on   intg.deleted =FALSE
+LEFT OUTER JOIN 
+ (SELECT * from hrpayrollintegrationdef where hrbranchrecid='0083e05c-ba9a-11ee-b160-b7e4e57a3c78'  and deleted=FALSE  order by integrationcodeid asc) AS entegrasyon
+on entegrasyon.integrationcodeid=intg.id
+
+*******************
+2 
+
+Select  
+tablo.branch as hrbranchrecid,
+tablo.department as hrdepartmentrecid ,
+intg.id as integrationcodeid ,
+entegrasyon.debitaccountrecid as debitaccountrecid,
+entegrasyon.creditaccountrecid as creditaccountrecid,
+entegrasyon.debitaccountdepartrecid as debitaccountrecid ,
+entegrasyon.creditaccountdepartrecid as creditaccountrecid,
+entegrasyon.debitgrouptype as debitgrouptype ,
+entegrasyon.creditgrouptype as creditgrouptype,
+entegrasyon.debitorderno as debitorderno ,
+entegrasyon.debitorderno  as debitorderno ,
+entegrasyon.periodrecid as periodrecid ,
+entegrasyon.enterprisesid as enterprisesid
+FROM (
+select  hrorgbranchdepartments.id,
+hrorgbranchdepartments.branch
+,hrorgbranchdepartments.department
+,hrorgbranchdepartments.enterprisesid
+from hrorgbranchdepartments
+where branch in ('0083e056-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e057-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e06c-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e067-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e06d-ba9a-11ee-b160-b7e4e57a3c78') ) as tablo
+LEFT OUTER  JOIN hrorgbranch on tablo.branch = hrorgbranch.recid
+LEFT  OUTER  JOIN hrorgdepartment on tablo.department = hrorgdepartment.recid
+LEFT OUTER JOIN hrcodelistintegrationcode intg on   intg.deleted =FALSE
+LEFT OUTER JOIN 
+ (SELECT * from hrpayrollintegrationdef where hrbranchrecid='0083e05c-ba9a-11ee-b160-b7e4e57a3c78'  and deleted=FALSE  order by integrationcodeid asc) AS entegrasyon
+on entegrasyon.integrationcodeid=intg.id
+
+
+
+3 INSERTLİ HALİ -**********************************
+
+
+INSERT INTO hrpayrollintegrationdef  (
+recid,
+hrbranchrecid,
+hrdepartmentrecid,
+integrationcodeid,
+debitaccountrecid,
+creditaccountrecid,
+debitaccountdepartrecid,
+creditaccountdepartrecid,
+debitgrouptype,
+creditgrouptype,
+debitorderno,
+periodrecid,
+enterprisesid,
+deleted,
+createdby
+)
+
+Select  
+uuid_generate_v1 () as recid,
+tablo.branch as hrbranchrecid,
+tablo.department as hrdepartmentrecid ,
+intg.id as integrationcodeid ,
+entegrasyon.debitaccountrecid as debitaccountrecid,
+entegrasyon.creditaccountrecid as creditaccountrecid,
+entegrasyon.debitaccountdepartrecid as debitaccountdepartrecid ,
+entegrasyon.creditaccountdepartrecid as creditaccountdepartrecid,
+entegrasyon.debitgrouptype as debitgrouptype ,
+entegrasyon.creditgrouptype as creditgrouptype,
+entegrasyon.debitorderno as debitorderno ,
+entegrasyon.periodrecid as periodrecid ,
+entegrasyon.enterprisesid as enterprisesid,
+FALSE as deleted,
+'Excelden Aktarım' as createdby
+FROM (
+select  hrorgbranchdepartments.id,
+hrorgbranchdepartments.branch
+,hrorgbranchdepartments.department
+,hrorgbranchdepartments.enterprisesid
+from hrorgbranchdepartments
+where branch in ('0083e056-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e057-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e06c-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e067-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e06d-ba9a-11ee-b160-b7e4e57a3c78') ) as tablo
+LEFT OUTER  JOIN hrorgbranch on tablo.branch = hrorgbranch.recid
+LEFT  OUTER  JOIN hrorgdepartment on tablo.department = hrorgdepartment.recid
+LEFT OUTER JOIN hrcodelistintegrationcode intg on   intg.deleted =FALSE
+LEFT OUTER JOIN 
+ (SELECT * from hrpayrollintegrationdef where hrbranchrecid='0083e05c-ba9a-11ee-b160-b7e4e57a3c78'  and deleted=FALSE  order by integrationcodeid asc) AS entegrasyon
+on entegrasyon.integrationcodeid=intg.id
+
+4 canlı veride çalışan **********************
+ /*INSERT INTO hrpayrollintegrationdef  (
+recid,
+hrbranchrecid,
+hrdepartmentrecid,
+integrationcodeid,
+debitaccountrecid,
+creditaccountrecid,
+debitaccountdepartrecid,
+creditaccountdepartrecid,
+debitgrouptype,
+creditgrouptype,
+debitorderno,
+periodrecid,
+enterprisesid,
+deleted,
+createdby
+)
+
+Select  
+uuid_generate_v1 () as recid,
+tablo.branch as hrbranchrecid,
+tablo.department as hrdepartmentrecid ,
+intg.id as integrationcodeid ,
+entegrasyon.debitaccountrecid as debitaccountrecid,
+entegrasyon.creditaccountrecid as creditaccountrecid,
+entegrasyon.debitaccountdepartrecid as debitaccountdepartrecid ,
+entegrasyon.creditaccountdepartrecid as creditaccountdepartrecid,
+entegrasyon.debitgrouptype as debitgrouptype ,
+entegrasyon.creditgrouptype as creditgrouptype,
+entegrasyon.debitorderno as debitorderno ,
+entegrasyon.periodrecid as periodrecid ,
+entegrasyon.enterprisesid as enterprisesid,
+FALSE as deleted,
+'Excelden Aktarım' as createdby
+FROM (
+select  hrorgbranchdepartments.id,
+hrorgbranchdepartments.branch
+,hrorgbranchdepartments.department
+,hrorgbranchdepartments.enterprisesid
+from hrorgbranchdepartments
+where branch in ('0083e056-ba9a-11ee-b160-b7e4e57a3c78', 
+'0083e057-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e06c-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e067-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e06d-ba9a-11ee-b160-b7e4e57a3c78') ) as tablo
+LEFT OUTER  JOIN hrorgbranch on tablo.branch = hrorgbranch.recid
+LEFT  OUTER  JOIN hrorgdepartment on tablo.department = hrorgdepartment.recid
+LEFT OUTER JOIN hrcodelistintegrationcode intg on   intg.deleted =FALSE
+LEFT OUTER JOIN 
+ (SELECT * from hrpayrollintegrationdef where hrbranchrecid='0083e060-ba9a-11ee-b160-b7e4e57a3c78'  and deleted=FALSE  order by integrationcodeid asc) AS entegrasyon
+on entegrasyon.integrationcodeid=intg.id
+ORDER BY tablo.branch,tablo.department,intg.id asc
+/*DELETE FROM hrpayrollintegrationdef where hrbranchrecid in ('0083e056-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e057-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e06c-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e067-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e06d-ba9a-11ee-b160-b7e4e57a3c78') */ 
+
+
+
+
+********** 4 YAPILAN KAYTITTAKİ SON HALİ  entegrasyon sorgusunda daha önce tanımlanmış bir işyeri departman baz alınıyor ********************************
+
+/*INSERT INTO hrpayrollintegrationdef  (
+recid,
+hrbranchrecid,
+hrdepartmentrecid,
+integrationcodeid,
+debitaccountrecid,
+creditaccountrecid,
+debitaccountdepartrecid,
+creditaccountdepartrecid,
+debitgrouptype,
+creditgrouptype,
+debitorderno,
+periodrecid,
+enterprisesid,
+deleted,
+createdby
+)
+
+Select  
+uuid_generate_v1 () as recid,
+tablo.branch as hrbranchrecid,
+tablo.department as hrdepartmentrecid ,
+intg.id as integrationcodeid ,
+entegrasyon.debitaccountrecid as debitaccountrecid,
+entegrasyon.creditaccountrecid as creditaccountrecid,
+entegrasyon.debitaccountdepartrecid as debitaccountdepartrecid ,
+entegrasyon.creditaccountdepartrecid as creditaccountdepartrecid,
+entegrasyon.debitgrouptype as debitgrouptype ,
+entegrasyon.creditgrouptype as creditgrouptype,
+entegrasyon.debitorderno as debitorderno ,
+entegrasyon.periodrecid as periodrecid ,
+entegrasyon.enterprisesid as enterprisesid,
+FALSE as deleted,
+'Excelden Aktarım İsmail ' as createdby
+FROM (
+select  hrorgbranchdepartments.id,
+hrorgbranchdepartments.branch
+,hrorgbranchdepartments.department
+,hrorgbranchdepartments.enterprisesid
+from hrorgbranchdepartments
+where branch in (
+    '0083e05c-ba9a-11ee-b160-b7e4e57a3c78',
+    '0083e060-ba9a-11ee-b160-b7e4e57a3c78'
+) ) as tablo
+LEFT OUTER  JOIN hrorgbranch on tablo.branch = hrorgbranch.recid
+LEFT  OUTER  JOIN hrorgdepartment on tablo.department = hrorgdepartment.recid
+LEFT OUTER JOIN hrcodelistintegrationcode intg on   intg.deleted =FALSE
+LEFT OUTER JOIN 
+ (SELECT * from hrpayrollintegrationdef where hrbranchrecid='0083e063-ba9a-11ee-b160-b7e4e57a3c78' and hrdepartmentrecid='b76986b2-ba9a-11ee-b160-b7e4e57a3c78' and deleted=FALSE) AS entegrasyon
+on entegrasyon.integrationcodeid=intg.id
+ORDER BY tablo.branch,tablo.department,intg.id asc
+
+/*DELETE FROM hrpayrollintegrationdef where hrbranchrecid in ('0083e056-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e057-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e06c-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e067-ba9a-11ee-b160-b7e4e57a3c78',
+'0083e06d-ba9a-11ee-b160-b7e4e57a3c78') */ 
+
+
+
+
+
+

@@ -1,0 +1,196 @@
+
+DROP TABLE IF EXISTS temp$_personelzvardiya;
+CREATE TEMPORARY TABLE temp$_personelzvardiya AS
+
+select *  from (
+
+ select 
+i.id,
+i.recid as temprecid,
+(ptl ->> 'Column0')::text as donemtarih, 
+(ptl ->> 'Column2')::text as tcno, 
+(ptl ->> 'Column3')::text as adsoyad,
+(ptl ->> 'Column5')::text as giristarih,
+(ptl ->> 'Column6')::text as cikistarih,
+(ptl ->> 'Column7')::text as g1,
+(ptl ->> 'Column8')::text as g2,
+(ptl ->> 'Column9')::text as g3,     
+(ptl ->> 'Column10')::text as g4,     
+(ptl ->> 'Column11')::text as g5,   
+(ptl ->> 'Column12')::text as g6,     
+(ptl ->> 'Column13')::text as g7,     
+(ptl ->> 'Column14')::text as g8, 
+(ptl ->> 'Column15')::text as g9,     
+(ptl ->> 'Column16')::text as g10,     
+(ptl ->> 'Column17')::text as g11,
+(ptl ->> 'Column18')::text as g12,     
+(ptl ->> 'Column19')::text as g13,     
+(ptl ->> 'Column20')::text as g14,   
+(ptl ->> 'Column21')::text as g15,     
+(ptl ->> 'Column22')::text as g16,     
+(ptl ->> 'Column23')::text as g17, 
+(ptl ->> 'Column24')::text as g18,     
+(ptl ->> 'Column25')::text as g19,  
+(ptl ->> 'Column26')::text as g20,
+(ptl ->> 'Column27')::text as g21,     
+(ptl ->> 'Column28')::text as g22,     
+(ptl ->> 'Column29')::text as g23,   
+(ptl ->> 'Column30')::text as g24,     
+(ptl ->> 'Column31')::text as g25,     
+(ptl ->> 'Column32')::text as g26, 
+(ptl ->> 'Column33')::text as g27,     
+(ptl ->> 'Column34')::text as g28,
+
+(ptl ->> 'Column35')::text as g29,
+(ptl ->> 'Column36')::text as g30,      
+(ptl ->> 'Column37')::text as g31 
+
+from importtempdetail i 
+CROSS join lateral json_array_elements(i.importeddata) as ptl
+where 1=1 
+and i.importtempid = '273f0a6e-35e4-4e06-8fb1-4eec44811fcc'
+--and i.importtempid = @importtempid
+)as detail 
+where length(detail.tcno)=11
+
+ ;
+ 
+ 
+/*
+ insert into hrpersonnelshift (recid,branchid,departmentid,personnelid,peremployment,shiftdate,dayorder,shiftcode,departmentapproval,departmentapprovaldate,hrapproval,hrapprovaldate,remark,departmentapprovaluser,hrapprovaluser,sourcedataid,orgsectionid,holidayvalue,enterprisesid,deleted,createdby,createddate)
+ */
+ 
+    SELECT * FROM
+    (
+
+select 
+ 
+uuid_generate_v1()::uuid  as recid, 
+gircik.branch as branchid,
+perpos.workdepartment as departmentid,
+sicil.recid as personnelid,
+gircik.recid as peremployment,
+vdetail.tarih::date as shiftdate,
+vdetail.dayorder,
+coalesce(vkod.recid,'00000000-0000-0000-0000-000000000000') as shiftcode,
+true::boolean as  departmentapproval,
+vdetail.tarih::date as departmentapprovaldate,	
+true::boolean as   hrapproval,	
+vdetail.tarih::date as hrapprovaldate,	
+'personelz excel aktarım' as remark,	
+'77d705be-e991-4556-97a2-dfd7c1afc070'::uuid as departmentapprovaluser,	
+'77d705be-e991-4556-97a2-dfd7c1afc070'::uuid as hrapprovaluser,
+vdetail.temprecid as sourcedataid, 
+'00000000-0000-0000-0000-000000000000'::uuid as orgsectionid,
+COALESCE(tatil.value,0)  as holidayvalue,
+(select enterprises.recid from enterprises where enterprises.deleted=false order by enterprises.id limit (1))::uuid as enterprisesid,
+false::boolean as deleted,
+'excel aktarım'::text as createdby,
+now()::timestamp without time zone as 	createddate
+
+ from (
+select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,  g1 as  puantaj ,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2),'-01')::date as tarih, 1 as dayorder from temp$_personelzvardiya  
+union all
+select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g2 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-02')::date AS tarih, 2 as dayorder from temp$_personelzvardiya  
+union ALL
+select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,  g3 as  puantaj ,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-03')::date AS tarih, 3 as dayorder from temp$_personelzvardiya  
+union all
+select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g4 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-04')::date AS tarih, 4 as dayorder from temp$_personelzvardiya  
+union ALL
+select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,  g5 as  puantaj ,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-05')::date AS tarih, 5 as dayorder from temp$_personelzvardiya  
+union all
+select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g6 as  puantaj, concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-06')::date AS tarih, 6 as dayorder from temp$_personelzvardiya  
+union ALL
+select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,  g7 as  puantaj ,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-07')::date AS tarih, 7 as dayorder from temp$_personelzvardiya  
+union all
+select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g8 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-08')::date AS tarih, 8 as dayorder from temp$_personelzvardiya  
+union ALL
+select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,  g9 as  puantaj ,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-09')::date AS tarih, 9 as dayorder from temp$_personelzvardiya  
+union all
+select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g10 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-10')::date AS tarih, 10 as dayorder from temp$_personelzvardiya  
+union all
+select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g11 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-11')::date AS tarih, 11 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g12 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-12')::date AS tarih, 12 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g13 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-13')::date AS tarih, 13 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g14 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-14')::date AS tarih, 14 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g15 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-15')::date AS tarih, 15 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g16 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-16')::date AS tarih, 16 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g17 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-17')::date AS tarih, 17 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g18 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-18')::date AS tarih, 18 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g19 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-19')::date AS tarih, 19 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g20 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-20')::date AS tarih, 20 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g21 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-21')::date AS tarih, 21 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g22 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-22')::date AS tarih, 22 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g23 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-23')::date AS tarih, 23 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g24 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-24')::date AS tarih, 24 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g25 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-25')::date AS tarih, 25 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g26 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-26')::date AS tarih, 26 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g27 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-27')::date AS tarih, 27 as dayorder from temp$_personelzvardiya
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g28 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-28')::date AS tarih, 28 as dayorder from temp$_personelzvardiya
+union all
+
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g29 as  puantaj,
+ (case when concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-29')::text<=(Select (date_trunc('month', temp$_personelzvardiya.donemtarih::date) + interval '1 month - 1 day') from temp$_personelzvardiya limit 1)::text
+ then
+ concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-29')::date
+ else '1900-01-01'::date end) as tarih,29 as dayorder from temp$_personelzvardiya
+
+union all
+
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g30 as  puantaj,
+ (case when concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-30')::text<=(Select (date_trunc('month', temp$_personelzvardiya.donemtarih::date) + interval '1 month - 1 day') from temp$_personelzvardiya limit 1)::text
+ then
+ concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-30')::date
+ else '1900-01-01'::date end) as tarih,30 as dayorder from temp$_personelzvardiya
+
+ union all
+
+  select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g31 as  puantaj,
+ (case when concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-31')::text<=(Select (date_trunc('month', temp$_personelzvardiya.donemtarih::date) + interval '1 month - 1 day') from temp$_personelzvardiya limit 1)::text
+ then
+ concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-31')::date
+ else '1900-01-01'::date end) as tarih,31 as dayorder from temp$_personelzvardiya
+
+/*
+union all
+ select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g30 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-30')::date AS tarih, 30 as dayorder from temp$_personelzvardiya
+union all
+select id,	temprecid,	tcno,	adsoyad,	giristarih,	cikistarih,g31 as  puantaj,concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-31')::date AS tarih, 31 as dayorder from temp$_personelzvardiya
+ --union all*/
+ --SELECT id,temprecid,tcno,adsoyad,giristarih,cikistarih,g31 AS puantaj, (case when (SubString(donemtarih,1,2)::numeric in  ('02','04','06','09','11')) then '01.01.1900' else (concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-31')) end)::date as tarih,31 AS dayorder FROM temp$_personelzvardiya WHERE EXISTS (SELECT lastdayofmonth FROM hrcalendar WHERE (concat(SubString(donemtarih,7,4),'-',SubString(donemtarih,1,2)|| '-31')::date = lastdayofmonth::date) )
+ )  as vdetail
+  inner join hrpersonnel sicil on sicil.citizenshipno=vdetail.tcno and sicil.deleted=false 
+ left outer join hrcodelistshiftcode vkod on vkod.chartcode::text=vdetail.puantaj::text
+  inner join hrpersonnelemployment gircik on gircik.personneluuid=sicil.recid and  gircik.id= ( select gc.id from hrpersonnelemployment gc where gc.deleted=false and gc.personneluuid=sicil.recid and gc.begindate<=vdetail.tarih order by gc.begindate desc limit (1) )
+  left outer join hrpersonnelposition perpos on perpos.id= (select pp.id from hrpersonnelposition pp where pp.deleted=False and pp.peremployment=gircik.recid and pp.begindate<=vdetail.tarih order by pp.begindate desc limit (1)  )
+  left outer join hrcodelistholiday tatil on (vdetail.tarih)::date=concat(tatil.yearno,'-',tatil.monthno,'-',tatil.dayno)::date
+ /*
+ where 1=1
+ and date(vdetail.tarih) between date(gircik.begindate) and date(gircik.enddate)
+ and  not exists ( select vardiya.recid from hrpersonnelshift vardiya where vardiya.deleted=false and vardiya.peremployment=gircik.recid and date(vardiya.shiftdate)=date(vdetail.tarih) ) 
+ and (case when  date_part('month',date(vdetail.tarih)) in ('04','06','09','11') then dayorder<>31 else 1=1 end )
+ */
+  
+ order by gircik.recid,date(vdetail.tarih)
+ ) AS TABLO
+
+  
+ 
+ 

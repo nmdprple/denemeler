@@ -1,0 +1,21 @@
+
+*********************
+$trendy = Import-Csv -Path C:\Users\ismail.uguz\Desktop\trendy.csv -Delimiter ";" | Select-Object PersonelId,IsyeriId
+
+for ($i = 0; $i -lt $trendy.Length; $i++) {
+    $personelId = $trendy.PersonelId[$i]
+    $IsyeriId = $trendy.IsyeriId[$i]
+    
+    $query = @"
+    BEGIN
+INSERT INTO PersonelIzin (PersonelId, IsyeriId, PersonelPozId, KayitKaynakId, Silindi, IsPlan, DepartmanOnay, IKOnay, KurumOnay, YetkiKodId, BaslangicTarihiTum, BitisTarihiTum, IzinGunTum, KayitAciklama, BaslangicSaati)
+VALUES ($personelId, $IsyeriId, (SELECT MAX(Id) FROM PersonelPozisyon WHERE PersonelId=$personelId AND Silindi=0), 0, 0, 0, 1, 1, 1, 1, '2024-04-01', '2024-04-01', 0, 'Excelden Import edildi', '2024-04-01 00:00:00.000')
+    END
+    BEGIN
+INSERT INTO PersonelIzinDetay (PersonelIzinId, BaslangicTarihi, BitisTarihi, IzinTipId, IzinGun, IzSaatSure, IsSaatlikIzin, BordroId, PuantajId)
+VALUES ((SELECT MAX(Id) FROM PersonelIzin), '2024-04-01', '2024-04-01', 1, 0, 0, 1, 0, 0)
+    END
+"@
+    
+      $query | Out-File  C:\Users\ismail.uguz\Desktop\trendy.sql -Append  
+} 
