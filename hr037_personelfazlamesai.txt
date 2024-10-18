@@ -1,4 +1,3 @@
---drop FUNCTION hr037_personelfazlamesai
 
 CREATE OR REPLACE FUNCTION public.hr037_personelfazlamesai(
     parambranchuuid uuid,
